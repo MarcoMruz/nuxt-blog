@@ -17,8 +17,8 @@
   </div>
 </template>
 
-<script>
-import TheSideNavToggle from '@/components/Navigation/TheSideNavToggle'
+<script lang="ts">
+import TheSideNavToggle from './TheSideNavToggle.vue'
 
 export default {
   name: 'TheHeader',

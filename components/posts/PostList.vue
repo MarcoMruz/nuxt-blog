@@ -1,6 +1,6 @@
 <template>
   <section class="featured-posts">
-    <PostPreview :post="getPost" />
+    <PostPreview :post="getPost" :is-admin="isAdmin" />
   </section>
 </template>
 <script lang="ts">
@@ -10,6 +10,13 @@ import { Post } from '~/types/Post'
 export default {
   components: {
     PostPreview,
+  },
+
+  props: {
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {

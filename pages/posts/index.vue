@@ -1,6 +1,6 @@
 <template>
   <section class="featured-posts">
-    <PostList />
+    <PostList isAdmin />
   </section>
 </template>
 <script lang="ts">

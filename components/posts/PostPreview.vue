@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="`/posts/${post.id}`" class="post-preview"
+  <nuxt-link :to="postLink" class="post-preview"
     ><article>
       <div
         class="post-thumbnail"
@@ -21,6 +21,16 @@ export default Vue.extend({
     post: {
       type: Object,
       required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  computed: {
+    postLink(): string {
+      return this.isAdmin ? `/admin/${this.post.id}` : `/posts/${this.post.id}`
     },
   },
 })
