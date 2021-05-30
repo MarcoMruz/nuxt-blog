@@ -3,7 +3,7 @@
     <section class="intro">
       <h1>Get the latest tech news!</h1>
     </section>
-    <PostList />
+    <PostList :posts="posts" />
   </div>
 </template>
 
@@ -11,10 +11,17 @@
 import Vue from 'vue'
 
 import PostList from '@/components/posts/PostList.vue'
+import { Post } from '~/types/Post'
 
 export default Vue.extend({
   components: {
     PostList,
+  },
+
+  computed: {
+    posts(): Post[] {
+      return this.$store.getters.posts
+    },
   },
 })
 </script>

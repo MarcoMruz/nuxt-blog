@@ -14,6 +14,8 @@ export default {
     AdminPostForm,
   },
 
+  layout: 'admin',
+
   data() {
     return {
       loadedPost: {

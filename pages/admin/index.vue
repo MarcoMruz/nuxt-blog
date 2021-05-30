@@ -7,17 +7,26 @@
     </section>
     <section class="existing-posts">
       <h1>Existing Posts</h1>
-      <PostList />
+      <PostList isAdmin :posts="posts" />
     </section>
   </div>
 </template>
 
-<script>
-import PostList from '@/components/posts/PostList'
+<script lang="ts">
+import PostList from '@/components/posts/PostList.vue'
+import { Post } from '@/types/Post'
 
 export default {
   components: {
     PostList,
+  },
+
+  layout: 'admin',
+
+  computed: {
+    posts(): Post[] {
+      return this.$store.getters.posts
+    },
   },
 }
 </script>
