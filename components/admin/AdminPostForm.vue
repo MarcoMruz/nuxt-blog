@@ -5,7 +5,11 @@
 
       <AppControlInput v-model="editedPost.title">Title</AppControlInput>
 
-      <AppControlInput v-model="editedPost.thumbnailLink"
+      <AppControlInput v-model="editedPost.previewText"
+        >Preview Text</AppControlInput
+      >
+
+      <AppControlInput v-model="editedPost.thumbnail"
         >Thumbnail Link</AppControlInput
       >
 
@@ -38,7 +42,6 @@ export default {
   props: {
     post: {
       type: Object,
-      required: false,
       default: () => {},
     },
   },
@@ -47,15 +50,16 @@ export default {
       editedPost: this.post ?? {
         author: '',
         title: '',
-        thumbnailLink: '',
+        thumbnail: '',
         content: '',
+        previewText: '',
       },
     }
   },
 
   methods: {
     handleSubmit() {
-      // save the post
+      this.$emit('submit', this.editedPost)
     },
 
     onCancel() {

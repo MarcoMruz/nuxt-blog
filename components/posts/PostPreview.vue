@@ -14,12 +14,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropType } from 'vue'
+import { Post } from '~/types/Post'
 
 export default Vue.extend({
   props: {
     post: {
-      type: Object,
+      type: Object as PropType<Post>,
       required: true,
     },
     isAdmin: {

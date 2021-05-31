@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import { API_DB_URL } from '~/config'
 import { Post } from '~/types/Post'
 
 const createStore = () => {
@@ -14,22 +15,19 @@ const createStore = () => {
     },
 
     actions: {
-      nuxtServerInit(vuexContext) {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            vuexContext.commit('setPosts', [
-              {
-                id: '1',
-                title: 'This is the first post',
-                previewText: 'Lorem ipsum dolor sit amet',
-                thumbnail:
-                  'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhedgetrade.com%2Fwp-content%2Fuploads%2F2019%2F03%2FBlockchain-Coding.jpg&f=1&nofb=1',
-              },
-            ])
+      async nuxtServerInit(vuexContext) {
+        try {
+          const response = this.$axios.get(`${API_DB_URL}/posts.json`)
+          const posts = [] as Post[]
 
-            resolve(1)
-          }, 1500)
-        })
+          for (const key in (await response).data) {
+            posts.push({ ...(await response).data[key], id: key })
+          }
+
+          vuexContext.commit('setPosts', posts)
+        } catch (error) {
+          throw new Error(error)
+        }
       },
       setPosts(context, posts: Post[]) {
         context.commit('setPosts', posts)
@@ -37,7 +35,7 @@ const createStore = () => {
     },
 
     getters: {
-      posts(state) {
+      posts(state): Post[] {
         return state.loadedPosts
       },
     },
