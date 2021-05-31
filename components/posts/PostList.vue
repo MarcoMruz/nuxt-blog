@@ -9,9 +9,10 @@
   </section>
 </template>
 <script lang="ts">
+import Vue from 'vue'
 import PostPreview from '@/components/posts/PostPreview.vue'
 
-export default {
+export default Vue.extend({
   components: {
     PostPreview,
   },
@@ -27,7 +28,7 @@ export default {
       required: true,
     },
   },
-}
+})
 </script>
 <style scoped>
 .featured-posts {

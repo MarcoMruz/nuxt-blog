@@ -8,7 +8,6 @@
 
 <script>
 import AdminPostForm from '@/components/admin/AdminPostForm'
-import { API_DB_URL } from '@/config'
 
 export default {
   components: {
@@ -19,10 +18,9 @@ export default {
 
   methods: {
     onSubmit(post) {
-      this.$axios.post(`${API_DB_URL}/posts.json`, {
-        ...post,
-        updatedAt: new Date(),
-      })
+      this.$store
+        .dispatch('addPost', post)
+        .then(() => this.$router.replace('/admin'))
     },
   },
 }

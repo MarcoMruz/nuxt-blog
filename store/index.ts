@@ -12,6 +12,18 @@ const createStore = () => {
       setPosts(state, posts: Post[]) {
         state.loadedPosts = posts
       },
+
+      addPost(state, post: Post) {
+        state.loadedPosts.push(post)
+      },
+
+      editPost(state, editedPost: Post) {
+        const postIndex = state.loadedPosts.findIndex(
+          (post) => post.id === editedPost.id
+        )
+
+        state.loadedPosts[postIndex] = editedPost
+      },
     },
 
     actions: {
@@ -31,6 +43,25 @@ const createStore = () => {
       },
       setPosts(context, posts: Post[]) {
         context.commit('setPosts', posts)
+      },
+
+      addPost(context, post: Post) {
+        return this.$axios
+          .post(`${API_DB_URL}/posts.json`, {
+            ...post,
+            updatedAt: new Date(),
+          })
+          .then((res) => {
+            context.commit('addPost', { ...post, id: res.data.name })
+          })
+      },
+
+      editPost(context, post: Post) {
+        return this.$axios
+          .put(`${API_DB_URL}/posts/${post.id}.json`, post)
+          .then(() => {
+            context.commit('editPost', { ...post, id: post.id })
+          })
       },
     },
 

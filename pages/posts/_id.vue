@@ -14,8 +14,10 @@
   </div>
 </template>
 <script lang="ts">
+import Vue from 'vue'
 import { API_DB_URL } from '~/config'
-export default {
+
+export default Vue.extend({
   asyncData({ $axios, params }) {
     return $axios
       .get(`${API_DB_URL}/posts/${params.id}.json`)
@@ -26,7 +28,7 @@ export default {
       })
       .catch((error) => console.error(error))
   },
-}
+})
 </script>
 <style scoped>
 .single-post-page {

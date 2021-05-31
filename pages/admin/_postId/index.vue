@@ -38,8 +38,11 @@ export default Vue.extend({
 
   methods: {
     onSubmit(post: Post) {
-      this.$axios
-        .put(`${API_DB_URL}/posts/${this.$route.params.postId}.json`, post)
+      this.$store
+        .dispatch('editPost', {
+          ...post,
+          id: this.$route.params.postId,
+        })
         .then(() => this.$router.replace('/admin'))
     },
   },

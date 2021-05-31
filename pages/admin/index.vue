@@ -14,14 +14,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import PostList from '@/components/posts/PostList.vue'
 import { Post } from '@/types/Post'
 
 export default Vue.extend({
-  components: {
-    PostList,
-  },
-
   layout: 'admin',
 
   computed: {
