@@ -1,12 +1,12 @@
 <template>
   <div class="single-post-page">
     <section class="post">
-      <h1 class="post-title">Title of the post</h1>
+      <h1 class="post-title">{{ post.title }}</h1>
       <div class="post-details">
-        <div class="post-detail">last updated</div>
-        <div class="post-detail">written by you</div>
+        <div class="post-detail">{{ post.updatedAt }}</div>
+        <div class="post-detail">{{ post.author }}</div>
       </div>
-      <p class="post-content">content of the post</p>
+      <p class="post-content">{{ post.content }}</p>
     </section>
     <section class="post-feedback">
       <p><a href="mailto:marcomruz1@gmail.com">send email to the author</a></p>
@@ -14,7 +14,19 @@
   </div>
 </template>
 <script lang="ts">
-export default {}
+import { API_DB_URL } from '~/config'
+export default {
+  asyncData({ $axios, params }) {
+    return $axios
+      .get(`${API_DB_URL}/posts/${params.id}.json`)
+      .then((response) => {
+        return {
+          post: response.data,
+        }
+      })
+      .catch((error) => console.error(error))
+  },
+}
 </script>
 <style scoped>
 .single-post-page {

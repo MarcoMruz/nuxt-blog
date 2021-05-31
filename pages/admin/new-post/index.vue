@@ -19,7 +19,10 @@ export default {
 
   methods: {
     onSubmit(post) {
-      this.$axios.post(`${API_DB_URL}/posts.json`, post)
+      this.$axios.post(`${API_DB_URL}/posts.json`, {
+        ...post,
+        updatedAt: new Date(),
+      })
     },
   },
 }

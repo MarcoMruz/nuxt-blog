@@ -1,31 +1,47 @@
 <template>
   <div class="admin-post-page">
     <section class="update-form">
-      <AdminPostForm :post="loadedPost" />
+      <AdminPostForm :post="post" @submit="onSubmit" />
     </section>
   </div>
 </template>
 
-<script>
-import AdminPostForm from '@/components/admin/AdminPostForm'
+<script lang="ts">
+import Vue from 'vue'
+import AdminPostForm from '@/components/admin/AdminPostForm.vue'
+import { Post } from '@/types/Post'
+import { API_DB_URL } from '~/config'
 
-export default {
+export default Vue.extend({
   components: {
     AdminPostForm,
   },
 
   layout: 'admin',
 
+  async asyncData({ $axios, params }) {
+    let post = { data: '' }
+    try {
+      post = await $axios.get(`${API_DB_URL}/posts/${params.postId}.json`)
+    } catch (error) {
+      console.error(error)
+    }
+
+    return { post: post.data }
+  },
+
   data() {
     return {
-      loadedPost: {
-        author: 'Marco',
-        title: 'lorem ipsum',
-        content: 'super amazing website you are on',
-        thumbnailLink:
-          'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fhedgetrade.com%2Fwp-content%2Fuploads%2F2019%2F03%2FBlockchain-Coding.jpg&f=1&nofb=1',
-      },
+      post: {} as Post,
     }
   },
-}
+
+  methods: {
+    onSubmit(post: Post) {
+      this.$axios
+        .put(`${API_DB_URL}/posts/${this.$route.params.postId}.json`, post)
+        .then(() => this.$router.replace('/admin'))
+    },
+  },
+})
 </script>
