@@ -15,12 +15,11 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { API_DB_URL } from '~/config'
 
 export default Vue.extend({
   asyncData({ $axios, params }) {
     return $axios
-      .get(`${API_DB_URL}/posts/${params.id}.json`)
+      .get(`/posts/${params.id}.json`)
       .then((response) => {
         return {
           post: response.data,

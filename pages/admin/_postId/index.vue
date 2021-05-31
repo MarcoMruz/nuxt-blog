@@ -10,7 +10,6 @@
 import Vue from 'vue'
 import AdminPostForm from '@/components/admin/AdminPostForm.vue'
 import { Post } from '@/types/Post'
-import { API_DB_URL } from '~/config'
 
 export default Vue.extend({
   components: {
@@ -22,7 +21,7 @@ export default Vue.extend({
   async asyncData({ $axios, params }) {
     let post = { data: '' }
     try {
-      post = await $axios.get(`${API_DB_URL}/posts/${params.postId}.json`)
+      post = await $axios.get(`/posts/${params.postId}.json`)
     } catch (error) {
       console.error(error)
     }
