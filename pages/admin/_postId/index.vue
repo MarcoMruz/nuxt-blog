@@ -17,7 +17,7 @@ export default Vue.extend({
   },
 
   layout: 'admin',
-  middleware: 'auth',
+  middleware: ['check-auth', 'auth'],
 
   async asyncData({ $axios, params }) {
     let post = { data: '' }

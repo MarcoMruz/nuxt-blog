@@ -1,12 +1,35 @@
 import Vuex from 'vuex'
-import { API_KEY } from '~/config'
+import Cookie from 'js-cookie'
+import { API_DB_URL, API_KEY } from '~/config'
 import { Post } from '~/types/Post'
+
+function getExpirationDateOfToken(expiresIn: number): string {
+  return new Date().getTime() + +expiresIn * 1000 + ''
+}
+
+function saveTokenToSession(token: string, expiresIn: number) {
+  localStorage.setItem('token', token)
+  localStorage.setItem('tokenExpiration', getExpirationDateOfToken(expiresIn))
+
+  Cookie.set('jwt', token)
+  Cookie.set('expirationDate', getExpirationDateOfToken(expiresIn))
+}
+
+function getCookie(name: string, req: any) {
+  const cookie = req.headers.cookie
+    .split(';')
+    .find((c: string) => c.trim().startsWith(`${name}=`))
+
+  if (!cookie) return null
+
+  return cookie.split('=')[1]
+}
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
       loadedPosts: [] as Post[],
-      token: '',
+      token: null,
     },
 
     mutations: {
@@ -29,16 +52,20 @@ const createStore = () => {
       setToken(state, token) {
         state.token = token
       },
+
+      clearToken(state) {
+        state.token = null
+      },
     },
 
     actions: {
       async nuxtServerInit(vuexContext) {
         try {
-          const response = this.$axios.$get(`/posts.json`)
+          const response = await this.$axios.get(`${API_DB_URL}/posts.json`)
           const posts = [] as Post[]
 
-          for (const key in (await response).data) {
-            posts.push({ ...(await response).data[key], id: key })
+          for (const key in response.data) {
+            posts.push({ ...response.data[key], id: key })
           }
 
           vuexContext.commit('setPosts', posts)
@@ -83,8 +110,34 @@ const createStore = () => {
           )
           .then((response) => {
             context.commit('setToken', response.data.idToken)
+
+            saveTokenToSession(response.data.idToken, response.data.expiresIn)
+
             this.$router.replace('/admin')
           })
+      },
+
+      initAuth(context, req) {
+        let token = null
+        let expiration = 0
+        if (req) {
+          if (!req.headers.cookie) return
+
+          if (getCookie('jwt', req)) {
+            token = getCookie('jwt', req)
+            expiration = getCookie('expirationDate', req)
+          } else return
+        } else {
+          token = localStorage.getItem('token')
+          expiration = +localStorage.getItem('tokenExpiration')!
+        }
+
+        if (new Date().getTime() > expiration || !token) {
+          context.commit('clearToken')
+          return
+        }
+
+        context.commit('setToken', token)
       },
     },
 
