@@ -15,6 +15,7 @@ export default {
   },
 
   layout: 'admin',
+  middleware: 'auth',
 
   methods: {
     onSubmit(post) {

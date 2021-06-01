@@ -1,11 +1,12 @@
 import Vuex from 'vuex'
-import { API_DB_URL } from '~/config'
+import { API_KEY } from '~/config'
 import { Post } from '~/types/Post'
 
 const createStore = () => {
   return new Vuex.Store({
     state: {
       loadedPosts: [] as Post[],
+      token: '',
     },
 
     mutations: {
@@ -24,12 +25,16 @@ const createStore = () => {
 
         state.loadedPosts[postIndex] = editedPost
       },
+
+      setToken(state, token) {
+        state.token = token
+      },
     },
 
     actions: {
       async nuxtServerInit(vuexContext) {
         try {
-          const response = this.$axios.get(`${API_DB_URL}/posts.json`)
+          const response = this.$axios.$get(`/posts.json`)
           const posts = [] as Post[]
 
           for (const key in (await response).data) {
@@ -47,7 +52,7 @@ const createStore = () => {
 
       addPost(context, post: Post) {
         return this.$axios
-          .post(`${API_DB_URL}/posts.json`, {
+          .$post(`/posts.json?auth=${context.state.token}`, {
             ...post,
             updatedAt: new Date(),
           })
@@ -58,9 +63,27 @@ const createStore = () => {
 
       editPost(context, post: Post) {
         return this.$axios
-          .put(`${API_DB_URL}/posts/${post.id}.json`, post)
+          .$put(`/posts/${post.id}.json?auth=${context.state.token}`, post)
           .then(() => {
             context.commit('editPost', { ...post, id: post.id })
+          })
+      },
+
+      authUser(context, { email, password, isLogin }) {
+        return this.$axios
+          .post(
+            `https://identitytoolkit.googleapis.com/v1/accounts:${
+              isLogin ? 'signInWithPassword' : 'signUp'
+            }?key=${API_KEY}`,
+            {
+              email,
+              password,
+              returnSecureToken: true,
+            }
+          )
+          .then((response) => {
+            context.commit('setToken', response.data.idToken)
+            this.$router.replace('/admin')
           })
       },
     },
@@ -68,6 +91,10 @@ const createStore = () => {
     getters: {
       posts(state): Post[] {
         return state.loadedPosts
+      },
+
+      isAuthenticated(state): boolean {
+        return !!state.token
       },
     },
   })

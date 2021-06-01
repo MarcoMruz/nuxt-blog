@@ -18,6 +18,7 @@ import { Post } from '@/types/Post'
 
 export default Vue.extend({
   layout: 'admin',
+  middleware: 'auth',
 
   computed: {
     posts(): Post[] {

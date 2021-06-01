@@ -2,8 +2,12 @@
   <div class="admin-auth-page">
     <div class="auth-container">
       <form @submit.prevent="onSubmit">
-        <AppControlInput type="email">E-Mail Address</AppControlInput>
-        <AppControlInput type="password">Password</AppControlInput>
+        <AppControlInput v-model="email" type="email"
+          >E-Mail Address</AppControlInput
+        >
+        <AppControlInput v-model="password" type="password"
+          >Password</AppControlInput
+        >
         <AppButton type="submit">{{ isLogin ? 'Login' : 'Sign Up' }}</AppButton>
         <AppButton
           type="button"
@@ -18,21 +22,28 @@
 </template>
 
 <script>
-export default {
+import Vue from 'vue'
+export default Vue.extend({
   name: 'AdminAuthPage',
   layout: 'admin',
   data() {
     return {
       isLogin: true,
+      email: '',
+      password: '',
     }
   },
 
   methods: {
     onSubmit() {
-      this.$axios.post()
+      this.$store.dispatch('authUser', {
+        email: this.email,
+        password: this.password,
+        isLogin: this.isLogin,
+      })
     },
   },
-}
+})
 </script>
 
 <style scoped>
