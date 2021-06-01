@@ -133,11 +133,22 @@ const createStore = () => {
         }
 
         if (new Date().getTime() > expiration || !token) {
-          context.commit('clearToken')
+          context.dispatch('logout')
           return
         }
 
         context.commit('setToken', token)
+      },
+
+      logout(context) {
+        context.commit('clearToken')
+        Cookie.remove('jwt')
+        Cookie.remove('expirationDate')
+
+        if (process.client) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('tokenExpiration')
+        }
       },
     },
 

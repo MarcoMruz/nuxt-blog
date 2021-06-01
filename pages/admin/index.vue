@@ -4,6 +4,7 @@
       <button @click="$router.push({ name: 'admin-new-post' })">
         Create Post
       </button>
+      <button @click="logout">Logout</button>
     </section>
     <section class="existing-posts">
       <h1>Existing Posts</h1>
@@ -23,6 +24,13 @@ export default Vue.extend({
   computed: {
     posts(): Post[] {
       return this.$store.getters.posts
+    },
+  },
+
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
+      this.$router.replace('/admin/auth')
     },
   },
 })
