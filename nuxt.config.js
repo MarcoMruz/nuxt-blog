@@ -21,8 +21,13 @@ export default {
 
   env: {},
 
-  transition: {
+  pageTransition: {
     name: 'fade',
+    mode: 'out-in',
+  },
+
+  layoutTransition: {
+    name: 'my-layouts',
     mode: 'out-in',
   },
 
