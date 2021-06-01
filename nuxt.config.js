@@ -26,6 +26,8 @@ export default {
     mode: 'out-in',
   },
 
+  // serverMiddleware: {},
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['~assets/styles/main.css'],
 
